@@ -7,7 +7,6 @@ Created on Sun Jan 31 01:30:00 2021
 
 import warnings 
 warnings.filterwarnings("ignore")
-import time 
 import requests
 import streamlit as st
 
@@ -68,7 +67,7 @@ def microsoft_qrng(minimum, maximum):
     return SampleRandomNumber.simulate(minima=minimum, maxima=maximum)
 
 
-def anu_generator(n, maxnum, dec, data_type):
+def anu_generator(n, data_type):
     '''
     This function generates n random numbers between 0 and maxnum
     by calling Australian National University's API. 
@@ -81,36 +80,41 @@ def anu_generator(n, maxnum, dec, data_type):
     anu_data = requests.get(link_string).json()
     my_random_numbers = [0]*n
     for i in range(len(anu_data['data'])):
-        my_random_numbers[i] = round((anu_data['data'][i] / 255) * maxnum, dec)
+        my_random_numbers[i] = anu_data['data'][i]
     return(my_random_numbers)
 
 
-if quantum_computer == "IBMQ":
-    try:
-        IBMQ.load_account()
-    except Exception as e:
-        st.write(e)
-        api_key = st.sidebar.text_input("Enter IBMQ API Key")
-        IBMQ.save_account(api_key)
-        IBMQ.load_account()
-    provider = IBMQ.get_provider(hub='ibm-q')
-    device = st.sidebar.selectbox("Select Quantum Device", [str(each) for each in provider.backends()])
-    backend = provider.get_backend(device)
-    if device == "ibmq_qasm_simulator":
-        num_q = 32
-    else:
-        num_q = 5
+
+if quantum_computer == "IBMQ" or quantum_computer == "Microsoft (Q#)":
+    if quantum_computer == "IBMQ":
+        try:
+            IBMQ.load_account()
+        except Exception as e:
+            st.write(e)
+            api_key = st.sidebar.text_input("Enter IBMQ API Key")
+            IBMQ.save_account(api_key)
+            IBMQ.load_account()
+        provider = IBMQ.get_provider(hub='ibm-q')
+        device = st.sidebar.selectbox("Select Quantum Device", [str(each) for each in provider.backends()])
+        backend = provider.get_backend(device)
+        if device == "ibmq_qasm_simulator":
+            num_q = 32
+        else:
+            num_q = 5
+    minimum = st.sidebar.number_input("Minimum Random Number", value=0)
+    maximum = st.sidebar.number_input("Maximum Random Number", min_value=minimum+1, value=minimum+1)
 elif quantum_computer == "ANU QRNG":
     data_type = st.sidebar.selectbox("Select Data Type", ['uint8 - integers between 0–255', 'uint16 - integers between 0–65535'])
-        
+    minimum = 0
+    if 'uint8' in data_type:
+        maximum = 255
+    else:
+        maximum = 65535
+    st.sidebar.write("Minimum Random Number: ", minimum)
+    st.sidebar.write("Maximum Random Number: ", maximum)
 
-minimum = st.sidebar.number_input("Minimum Random Number", value=0)
-maximum = st.sidebar.number_input("Maximum Random Number", min_value=minimum+1, value=100)
 num_rand_numbers = st.sidebar.number_input("Number of Random Numbers to be Generated", min_value=1, value=1)
-if quantum_computer == "ANU QRNG":
-    dec = st.sidebar.number_input("Decimal Precision", min_value=0, value=0)
 
-    
             
 def display_result(result1):
     if 'result1' in locals():
@@ -131,7 +135,7 @@ if st.sidebar.button("Generate Random Number"):
                     result1.append(ibmq_qrng(minimum, maximum))
             display_result(result1)
         elif quantum_computer == "Microsoft (Q#)":
-            if minimum > 0:
+            if minimum >= 0:
                 if num_rand_numbers==1:
                     result1 = microsoft_qrng(minimum, maximum)
                 else:
@@ -140,8 +144,8 @@ if st.sidebar.button("Generate Random Number"):
                         result1.append(microsoft_qrng(minimum, maximum))
                 display_result(result1)
             else:
-                st.markdown(f"<h3 style='text-align: center; color: black;'>Please enter Minimum Random Number to be generated 1 or greater then 1</h3>", unsafe_allow_html=True)
+                st.markdown(f"<h3 style='text-align: center; color: black;'>Please enter Minimum Random Number to be generated 0 or greater then 0</h3>", unsafe_allow_html=True)
         elif quantum_computer == "ANU QRNG":
-            display_result(anu_generator(num_rand_numbers, maximum, dec, data_type))
+            display_result(anu_generator(num_rand_numbers, data_type))
 else:
     st.markdown(f"<h3 style='text-align: center; color: black;'>Click on 'Generate Random Number' button</h3>", unsafe_allow_html=True)
