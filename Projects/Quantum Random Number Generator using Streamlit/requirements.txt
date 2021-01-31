@@ -1,0 +1,6 @@
+requests==2.25.1
+streamlit==0.75.0
+qsharp_chemistry==0.13.2011.1004
+qiskit_ignis==0.5.1
+qiskit==0.23.4
+qsharp==0.15.2101.126940
