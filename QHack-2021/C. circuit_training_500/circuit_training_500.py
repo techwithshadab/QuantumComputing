@@ -29,7 +29,48 @@ def classify_data(X_train, Y_train, X_test):
     predictions = []
 
     # QHACK #
+    dev = qml.device("default.qubit", wires=1)
 
+    @qml.qnode(dev)
+    def classifier(weights, x):
+        qml.RY(weights[0,0]*x[0]+weights[0,1], wires=0)
+        qml.RY(weights[1,0]*x[1]+weights[1,1], wires=0)
+        qml.RY(weights[2,0]*x[2]+weights[2,1], wires=0)
+        return qml.expval(qml.PauliZ(0))    
+
+    def square_loss(labels, predictions):
+        loss = 0
+        for l, p in zip(labels, predictions):
+            loss = loss + (l - p) ** 2
+        loss = loss / len(labels)
+        #print(loss)
+        return loss
+
+    def cost(weights, X, Y):
+        predictions = [classifier(weights, x) for x in X]
+        return square_loss(Y, predictions)
+
+    w = np.array([[1.0, 0.0], [1.0, 0.0], [1.0, 0.0]], dtype=np.float64)
+
+    steps = 20
+    batch_size = 25
+    opt = qml.GradientDescentOptimizer(0.1)
+
+    np.random.seed(0)
+    for _ in range(steps):
+        batch_index = np.random.randint(0, len(X_train), (batch_size,))
+        X_batch = X_train[batch_index]
+        Y_batch = Y_train[batch_index]
+        w = opt.step(lambda weights: cost(weights, X_batch, Y_batch), w)
+
+    predictions = [classifier(w, x) for x in X_test]
+    for i in range(len(X_test)):
+        if predictions[i] < -0.5:
+            predictions[i] = -1
+        elif predictions[i] > 0.5:
+            predictions[i] = 1
+        else:
+            predictions[i] = 0
     # QHACK #
 
     return array_to_concatenated_string(predictions)

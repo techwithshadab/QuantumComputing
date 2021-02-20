@@ -21,7 +21,14 @@ def variational_ansatz(params, wires):
     """
 
     # QHACK #
-
+    n_qubits = len(wires)
+    qml.PauliX(wires=0)
+    qml.RY(params[0], wires=0)
+    qml.CNOT(wires=[0,1])
+    qml.PauliX(wires=0)   
+    for i in range(1,n_qubits-1):
+        qml.CRY(params[i], wires=[i,i+1])
+        qml.CNOT(wires=[i+1,i])
     # QHACK #
 
 
@@ -42,14 +49,28 @@ def run_vqe(H):
     # QHACK #
 
     # Initialize the quantum device
+    num_qubits = len(H.wires)
+    dev = qml.device("default.qubit", wires=range(num_qubits))
 
     # Randomly choose initial parameters (how many do you need?)
+    params = np.random.uniform(low=-np.pi / 2, high=np.pi / 2, size=(num_qubits-1,))
 
     # Set up a cost function
+    cost_fn = qml.ExpvalCost(variational_ansatz, H, dev)
 
     # Set up an optimizer
+    opt = qml.GradientDescentOptimizer(stepsize=0.1)
 
     # Run the VQE by iterating over many steps of the optimizer
+    max_iterations = 500
+    conv_tol = 1e-06
+
+    for n in range(max_iterations):
+        params, prev_energy = opt.step_and_cost(cost_fn, params)
+        energy = cost_fn(params)
+        conv = np.abs(energy - prev_energy)
+        if conv <= conv_tol:
+            break
 
     # QHACK #
 
