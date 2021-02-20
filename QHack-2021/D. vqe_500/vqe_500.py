@@ -140,7 +140,6 @@ def find_excited_states(H):
     energies[0] = cost_fn0(params)
     energies[1] = cost_fn1(params)
     energies[2] = cost_fn2(params)
-
     # QHACK #
 
     return ",".join([str(E) for E in energies])
