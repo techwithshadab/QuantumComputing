@@ -6,12 +6,15 @@
 
 <h3> Quantum-Aided Medical Image Diagnosis </h3>
 
-#### Inspiration
-Breast cancer is the most common form of cancer in women, and invasive ductal carcinoma (IDC) is the most common form of breast cancer. Accurately identifying and categorizing breast cancer subtypes is an important clinical task, and automated methods can be used to save time and reduce error.
-
 <p align="center" width="400">
   <img src="../images/IDC.png"  />
 </p>
+
+
+
+#### Objective
+Inasive ductal carcinoma (IDC) is - with ~ 80 % of cases - one of the most common types of breast cancer. It's malicious and able to form metastases which makes it especially dangerous. Often a biopsy is done to remove small tissue samples. Then a pathologist has to decide whether a patient has IDC, another type of breast cancer or is healthy. In addition sick cells need to be located to find out how advanced the disease is and which grade should be assigned. This has to be done manually and is a time consuming process. Furthermore the decision depends on the expertise of the pathologist and his or her equipment. Here, I'm proposing to use <b> Quantum Genetic Algorithm (QGA) </b> and <b> Support Vector Machines (SVMs)</b>. I hope this method will be having effective results when compared to some of the standard approaches.
+
 
 ### Dataset:
 
@@ -25,6 +28,14 @@ The original dataset consisted of 162 whole mount slide images of Breast Cancer 
 ### Source code: 
 
 *[Code](https://github.com/shadab-entrepreneur/QuantumComputing/edit/main/QHack-2021/Open%20Hack/)*
+
+
+### References:
+- https://www.researchgate.net/publication/342391570_Quantum_neural_network_for_quicker_clinical_prognostic_analysis_An_application_and_experimental_study_using_CT_scan_images_of_COVID-19_patients
+- https://deepai.org/publication/quantum-medical-imaging-algorithms
+- https://link.springer.com/article/10.1007/s00521-020-05518-x
+- https://arxiv.org/abs/2011.02831
+
 
 ### Resource Estimate: 
 
