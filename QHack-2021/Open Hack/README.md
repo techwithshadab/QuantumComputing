@@ -4,8 +4,10 @@
 
 ### Project Description: 
 
-#### *Quantum Aided Medical Image Diagnosis*
-
+<p align="center" width="400">
+  <h3 align="center"> Quantum Aided Medical Image Diagnosis </h3>
+  <img src="../images/IDC.png"  />
+</p>
 
 ### Source code: 
 
