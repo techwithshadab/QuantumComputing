@@ -4,11 +4,12 @@
 
 ### Project Description: 
 
-*Quantum Aided Medical Image Diagnosis*
+#### *Quantum Aided Medical Image Diagnosis*
+
 
 ### Source code: 
 
-*A hyperlink to the draft source code for your team's hackathon project (e.g., a GitHub repo).*
+*[Code](https://github.com/shadab-entrepreneur/QuantumComputing/edit/main/QHack-2021/Open%20Hack/)*
 
 ### Resource Estimate: 
 
